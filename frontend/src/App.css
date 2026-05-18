@@ -1,0 +1,78 @@
+body {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 100%;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover { background-color: #357ae8; }
+button:disabled { background-color: #9aa0a6; cursor: not-allowed; }
+.logout-btn { background-color: #dc3545; margin-bottom: 1.5rem; }
+.logout-btn:hover { background-color: #c82333; }
+
+.bmi-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+.results-card {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.status { font-weight: bold; }
+.underweight { color: #17a2b8; }
+.normal { color: #28a745; }
+.overweight { color: #fd7e14; }
+.obese { color: #dc3545; }
+
+.ai-advice p {
+  line-height: 1.6;
+  white-space: pre-wrap; /* Keeps the line breaks from the AI response */
+}
