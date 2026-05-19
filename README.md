@@ -1,4 +1,4 @@
-# 🧠 SMART AI BMI Calculator
+# 🧠 SMART BMI Calculator
 
 A full-stack MERN web application that calculates a user's Body Mass Index (BMI), securely tracks their history, and generates highly personalized, actionable health advice using Google's Gemini Artificial Intelligence.
 
