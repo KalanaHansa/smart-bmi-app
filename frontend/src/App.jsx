@@ -3,6 +3,7 @@ import { auth, provider } from './firebaseConfig';
 import { signInWithPopup, signOut } from 'firebase/auth';
 import axios from 'axios';
 import './App.css';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -17,7 +18,7 @@ function App() {
     if (!auth.currentUser) return;
     try {
       const token = await auth.currentUser.getIdToken();
-      const response = await axios.get('http://localhost:5000/api/bmi/history', {
+      const response = await axios.get(`${BASE_URL}/api/bmi/history`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setHistory(response.data);
@@ -64,7 +65,7 @@ function App() {
       const token = await user.getIdToken();
 
       // 2. Send the request with the token in the headers
-      const response = await axios.post('http://localhost:5000/api/bmi/calculate', 
+      const response = await axios.post(`${BASE_URL}/api/bmi/calculate`, 
         { weight: Number(weight), height: Number(height) },
         { 
           headers: { 
