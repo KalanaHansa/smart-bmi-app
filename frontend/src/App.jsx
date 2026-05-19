@@ -85,46 +85,54 @@ function App() {
 
   return (
     <div className="container">
-      <h1>SMART BMI CALCULATER</h1>
-
-      {/* Authentication UI */}
-      {!user ? (
+    {/* Header with Title and Logout */}
+    {!user ? (
+      <>
+        <h1>SMART BMI CALCULATOR</h1>
         <button onClick={handleLogin} className="login-btn">
           Sign in with Google
         </button>
-      ) : (
-        <div className="user-section">
-          <p>Welcome, <strong>{user.displayName}</strong>!</p>
+      </>
+    ) : (
+      <>
+        <div className="header-section">
+          <div className="welcome-text">
+            <h1>SMART BMI CALCULATOR</h1>
+            <p className="user-greeting">Welcome, <strong>{user.displayName}</strong>!</p>
+          </div>
           <button onClick={handleLogout} className="logout-btn">Log Out</button>
-
-          {/* BMI Input Form */}
-          <form onSubmit={handleCalculate} className="bmi-form">
-            <div className="input-group">
-              <label>Weight (kg):</label>
-              <input 
-                type="number" 
-                value={weight} 
-                onChange={(e) => setWeight(e.target.value)} 
-                required 
-                min="10"
-              />
-            </div>
-            <div className="input-group">
-              <label>Height (cm):</label>
-              <input 
-                type="number" 
-                value={height} 
-                onChange={(e) => setHeight(e.target.value)} 
-                required 
-                min="50"
-              />
-            </div>
-            <button type="submit" disabled={loading}>
-              {loading ? "Analyzing via AI..." : "Calculate BMI & Get AI Health Tips"}
-            </button>
-          </form>
         </div>
-      )}
+
+        {/* BMI Input Form */}
+        <form onSubmit={handleCalculate} className="bmi-form">
+          <div className="input-group">
+            <label>Weight (kg):</label>
+            <input 
+              type="number" 
+              value={weight} 
+              onChange={(e) => setWeight(e.target.value)} 
+              required 
+              min="10"
+            />
+          </div>
+          <div className="input-group">
+            <label>Height (cm):</label>
+            <input 
+              type="number" 
+              value={height} 
+              onChange={(e) => setHeight(e.target.value)} 
+              required 
+              min="50"
+            />
+          </div>
+          <div className='submit-button'>
+            <button type="submit" disabled={loading}>
+              {loading ? "Analyzing via AI..." : "Calculate BMI & Get AI Health Tips"}           
+            </button>
+          </div>
+        </form>
+      </>
+    )}
 
       {/* Results Display */}
       {result && (
