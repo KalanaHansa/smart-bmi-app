@@ -4,8 +4,8 @@ A full-stack MERN web application that calculates a user's Body Mass Index (BMI)
 
 ## 🌐 Live Demo
 
-* **Frontend Application:** https://smart-bmi-app-backend2.vercel.app/
-* **Backend API:** https://smart-bmi-app.vercel.app/
+* **Frontend Application:** https://smart-bmi-app.vercel.app/
+* **Backend API:** https://smart-bmi-app-backend2.vercel.app/
 
 ## ✨ Features
 
