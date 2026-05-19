@@ -4,7 +4,7 @@ const router = express.Router();
 const BmiRecord = require('../models/BmiRecord');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Import our new middleware
+// Import middleware
 const verifyToken = require('../middleware/auth');
 
 // Initialize Gemini SDK
@@ -13,10 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 router.post('/calculate', verifyToken, async (req, res) => {
   try {
     const { weight, height } = req.body; 
-    
-    
-    // TEMPORARY: Hardcoded user ID for testing. 
-    // We will replace this with the Firebase uid in the next phase.
+
     const userId = req.user.uid; 
 
     // 1. Calculate BMI (Weight in kg / Height in meters squared)
@@ -31,14 +28,13 @@ router.post('/calculate', verifyToken, async (req, res) => {
 
     // 2. Generate AI Health Advice
     const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-    
-    // Prompt engineering to keep the AI focused
+
     const prompt = `A user has a BMI of ${bmi} (${status}). Provide 3 highly actionable, realistic health, nutrition, and exercise tips for them. Keep it concise, positive, and professional. Do not use markdown formatting like bolding. Add a short disclaimer that this is not medical advice.`;
     
     const result = await model.generateContent(prompt);
     const aiAdvice = result.response.text();
 
-    // 3. Save to MongoDB
+    // 3. Save to Database
     const newRecord = new BmiRecord({
       userId,
       weight,
@@ -49,8 +45,6 @@ router.post('/calculate', verifyToken, async (req, res) => {
     });
     
     await newRecord.save();
-
-    // 4. Send response back to the client
     res.status(201).json(newRecord);
 
   } catch (error) {
@@ -59,10 +53,9 @@ router.post('/calculate', verifyToken, async (req, res) => {
   }
 });
 
-// A quick route to fetch a user's history
 router.get('/history', verifyToken, async (req, res) => {
     try {
-        const userId = req.user.uid; // Verified user id
+        const userId = req.user.uid;
         const records = await BmiRecord.find({ userId }).sort({ createdAt: -1 });
         res.status(200).json(records);
     } catch (error) {

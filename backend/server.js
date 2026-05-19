@@ -2,20 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+const bmiRoutes = require('./routes/bmi');
 const app = express();
 
-// Middleware
-app.use(cors()); // Allows your React app to send requests here
-app.use(express.json()); // Allows your app to parse JSON data
+app.use(cors()); 
+app.use(express.json());
+app.use('/api/bmi', bmiRoutes);
 
-// Import Routes
-const bmiRoutes = require('./routes/bmi');
-
-// Use Routes
-app.use('/api/bmi', bmiRoutes); // All routes in bmi.js will start with /api/bmi
-
-// Basic Route to test the server
+// To test the server
 app.get('/', (req, res) => {
   res.send('Smart BMI Backend is running!');
 });

@@ -1,6 +1,5 @@
 const admin = require('firebase-admin');
 
-// Load your secret service account key
 const serviceAccount = require('../firebase-service-account.json');
 
 // Initialize the Firebase Admin SDK
@@ -22,7 +21,7 @@ const verifyToken = async (req, res, next) => {
     // 3. Ask Firebase to verify the token
     const decodedToken = await admin.auth().verifyIdToken(token);
     
-    // 4. Attach the user's data (like their uid) to the request object
+    // 4. Attach the user's data 
     req.user = decodedToken;
     
     // 5. Move on to the next function (the BMI calculator)

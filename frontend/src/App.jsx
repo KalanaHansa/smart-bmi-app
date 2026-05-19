@@ -1,5 +1,4 @@
-// src/App.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, provider } from './firebaseConfig';
 import { signInWithPopup, signOut } from 'firebase/auth';
 import axios from 'axios';
@@ -11,6 +10,29 @@ function App() {
   const [height, setHeight] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  // Fetch history
+  const fetchHistory = async () => {
+    if (!auth.currentUser) return;
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const response = await axios.get('http://localhost:5000/api/bmi/history', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setHistory(response.data);
+    } catch (error) {
+      console.error("Error fetching history", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchHistory();
+    } else {
+      setHistory([]);
+    }
+  }, [user]);
 
   // Handle Google Login
   const handleLogin = async () => {
@@ -38,7 +60,7 @@ function App() {
     setLoading(true);
 
     try {
-      // 1. Get the secure JWT token from Firebase
+      // 1. Get the JWT token from Firebase
       const token = await user.getIdToken();
 
       // 2. Send the request with the token in the headers
@@ -50,9 +72,8 @@ function App() {
           } 
         }
       );
-
-      // 3. Update the UI with the backend response
       setResult(response.data);
+      fetchHistory();
     } catch (error) {
       console.error("Error calculating BMI", error);
       alert("Failed to get AI advice. Make sure your backend is running.");
@@ -63,7 +84,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>SMART AI BMI Calculator</h1>
+      <h1>SMART BMI CALCULATER</h1>
 
       {/* Authentication UI */}
       {!user ? (
@@ -98,7 +119,7 @@ function App() {
               />
             </div>
             <button type="submit" disabled={loading}>
-              {loading ? "Analyzing via AI..." : "Calculate BMI & Get Advice"}
+              {loading ? "Analyzing via AI..." : "Calculate BMI & Get AI Health Tips"}
             </button>
           </form>
         </div>
@@ -113,6 +134,32 @@ function App() {
           <div className="ai-advice">
             <h4>AI Health Plan:</h4>
             <p>{result.aiAdvice}</p>
+          </div>
+        </div>
+      )}
+
+      {/* History Display */}
+      {user && history.length > 0 && (
+        <div className="history-dashboard">
+          <h3>Your BMI History</h3>
+          <div className="history-grid">
+            {history.map((record) => (
+              <div key={record._id} className="history-card">
+                <div className="history-header">
+                  <span className="date">
+                    {new Date(record.createdAt).toLocaleDateString()}
+                  </span>
+                  <span className={`status-badge ${record.status.toLowerCase()}`}>
+                    {record.status}
+                  </span>
+                </div>
+                <div className="history-metrics">
+                  <p><strong>BMI:</strong> {record.bmi}</p>
+                  <p><strong>Weight:</strong> {record.weight} kg</p>
+                  <p><strong>Height:</strong> {record.height} cm</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
