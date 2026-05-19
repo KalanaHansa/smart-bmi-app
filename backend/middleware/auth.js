@@ -1,6 +1,19 @@
+require('dotenv').config();
 const admin = require('firebase-admin');
 
-const serviceAccount = require('../firebase-service-account.json');
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (err) {
+    console.error('Invalid FIREBASE_SERVICE_ACCOUNT JSON:', err);
+    process.exit(1);
+  }
+} else {
+  console.error('FIREBASE_SERVICE_ACCOUNT is not set in the environment.');
+  console.error('Add FIREBASE_SERVICE_ACCOUNT to your .env or environment variables.');
+  process.exit(1);
+}
 
 // Initialize the Firebase Admin SDK
 admin.initializeApp({
@@ -8,23 +21,16 @@ admin.initializeApp({
 });
 
 const verifyToken = async (req, res, next) => {
-  // 1. Check if the Authorization header exists
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized: No token provided' });
   }
 
-  // 2. Extract the token (Remove "Bearer " from the string)
   const token = authHeader.split('Bearer ')[1];
 
   try {
-    // 3. Ask Firebase to verify the token
     const decodedToken = await admin.auth().verifyIdToken(token);
-    
-    // 4. Attach the user's data 
     req.user = decodedToken;
-    
-    // 5. Move on to the next function (the BMI calculator)
     next();
   } catch (error) {
     console.error('Error verifying token:', error);
