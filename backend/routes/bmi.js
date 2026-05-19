@@ -49,7 +49,7 @@ router.post('/calculate', verifyToken, async (req, res) => {
 
   } catch (error) {
     console.error("Error processing BMI:", error);
-    res.status(500).json({ error: 'Failed to process BMI data and generate advice' });
+    res.status(500).json({ error: `Failed to process BMI data and generate advice ${error.message}` });
   }
 });
 
@@ -59,7 +59,7 @@ router.get('/history', verifyToken, async (req, res) => {
         const records = await BmiRecord.find({ userId }).sort({ createdAt: -1 });
         res.status(200).json(records);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch history' });
+        res.status(500).json({ error: `Failed to fetch history ${error.message}` });
     }
 });
 
