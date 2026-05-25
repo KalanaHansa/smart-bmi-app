@@ -286,377 +286,59 @@ function App() {
 
   return (
     <div className="container">
-      {/* Onboarding Screen if not authenticated */}
+      <h1>SMART BMI CALCULATER</h1>
+
+      {/* Authentication UI */}
       {!user ? (
-        <div className="onboarding-card">
-          <div className="onboarding-header">
-            <div className="logo-glow"></div>
-            <div className="brand-logo">
-              <svg viewBox="0 0 24 24" width="36" height="36" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </div>
-            <h1>Smart BMI Tracker</h1>
-            <p>Calculate your BMI, visualize fitness progression, and receive personalized AI wellness and nutrition plans instantly.</p>
-          </div>
-          
-          <button onClick={handleLogin} className="login-btn">
-            <svg viewBox="0 0 24 24" width="20" height="20" className="btn-icon">
-              <path fill="currentColor" d="M12.24 10.285V13.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l2.427-2.334C17.955 2.192 15.34 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.478 0 10.793-4.537 10.793-10.983 0-.74-.08-1.302-.177-1.712H12.24z"/>
-            </svg>
-            Sign in with Google
-          </button>
-        </div>
+        <button onClick={handleLogin} className="login-btn">
+          Sign in with Google
+        </button>
       ) : (
-        <>
-          {/* Header Dashboard section */}
-          <div className="header-section">
-            <div className="brand-badge">
-              <svg viewBox="0 0 24 24" width="22" height="22" stroke="var(--primary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-              <span>Smart BMI</span>
+        <div className="user-section">
+          <p>Welcome, <strong>{user.displayName}</strong>!</p>
+          <button onClick={handleLogout} className="logout-btn">Log Out</button>
+
+          {/* BMI Input Form */}
+          <form onSubmit={handleCalculate} className="bmi-form">
+            <div className="input-group">
+              <label>Weight (kg):</label>
+              <input 
+                type="number" 
+                value={weight} 
+                onChange={(e) => setWeight(e.target.value)} 
+                required 
+                min="10"
+              />
             </div>
-            
-            <div className="header-actions">
-              <div className="user-profile">
-                {user.photoURL ? (
-                  <img 
-                    src={user.photoURL} 
-                    alt={user.displayName} 
-                    className="user-avatar" 
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="avatar-placeholder">
-                    {user.displayName ? user.displayName[0].toUpperCase() : 'U'}
-                  </div>
-                )}
-                <div className="user-meta">
-                  <span className="user-name">{user.displayName}</span>
-                  <span className="user-status">Welcome!</span>
-                </div>
-              </div>
-              <button onClick={handleLogout} className="logout-btn" title="Log Out">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
-                </svg>
-              </button>
+            <div className="input-group">
+              <label>Height (cm):</label>
+              <input 
+                type="number" 
+                value={height} 
+                onChange={(e) => setHeight(e.target.value)} 
+                required 
+                min="50"
+              />
             </div>
+            <button type="submit" disabled={loading}>
+              {loading ? "Analyzing via AI..." : "Calculate BMI & Get AI Health Tips"}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Results Display */}
+      {result && (
+        <div className="results-card">
+          <h2>Your BMI: {result.bmi}</h2>
+          <h3 className={`status ${result.status.toLowerCase()}`}>Status: {result.status}</h3>
+          
+          <div className="ai-advice">
+            <h4>AI Health Plan:</h4>
+            <p>{result.aiAdvice}</p>
           </div>
-
-          {/* Unit Toggle and Mobile Tabs Switcher */}
-          <div className="nav-controls">
-            <div className="unit-toggle">
-              <button 
-                type="button"
-                className={units === 'metric' ? 'active' : ''} 
-                onClick={() => handleUnitToggle('metric')}
-              >
-                Metric (kg/cm)
-              </button>
-              <button 
-                type="button"
-                className={units === 'imperial' ? 'active' : ''} 
-                onClick={() => handleUnitToggle('imperial')}
-              >
-                Imperial (lbs/in)
-              </button>
-            </div>
-
-            {/* Mobile-only tab headers */}
-            <div className="mobile-tabs">
-              <button 
-                type="button" 
-                className={activeTab === 'calc' ? 'tab-btn active' : 'tab-btn'}
-                onClick={() => setActiveTab('calc')}
-              >
-                Calculator
-              </button>
-              <button 
-                type="button" 
-                className={activeTab === 'history' ? 'tab-btn active' : 'tab-btn'}
-                onClick={() => setActiveTab('history')}
-              >
-                Progress ({history.length})
-              </button>
-            </div>
-          </div>
-
-          {/* Main Content Grid Dashboard */}
-          <div className="dashboard-grid">
-            
-            {/* COLUMN 1: CALCULATOR & GAUGES */}
-            <div className={`grid-column-left ${activeTab !== 'calc' ? 'mobile-hidden' : ''}`}>
-              <div className="dashboard-card calc-card">
-                <h3>Compute BMI</h3>
-                
-                <form onSubmit={handleCalculate} className="bmi-form">
-                  
-                  {/* Weight Input Range Slider and Input */}
-                  <div className="input-group">
-                    <div className="input-header">
-                      <label>Weight</label>
-                      <span className="input-val-badge">
-                        {weight || '0'} {units === 'metric' ? 'kg' : 'lbs'}
-                      </span>
-                    </div>
-                    
-                    <div className="input-slider-row">
-                      <input 
-                        type="range"
-                        min={units === 'metric' ? '30' : '65'}
-                        max={units === 'metric' ? '180' : '400'}
-                        step={units === 'metric' ? '0.5' : '1'}
-                        value={weight || (units === 'metric' ? '70' : '154')}
-                        onChange={(e) => setWeight(e.target.value)}
-                        className="bmi-range-slider"
-                      />
-                      <input 
-                        type="number" 
-                        value={weight} 
-                        onChange={(e) => setWeight(e.target.value)} 
-                        required 
-                        min="1"
-                        placeholder="Weight"
-                        className="bmi-numeric-input"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Height Input Metric or Imperial Sliders */}
-                  <div className="input-group">
-                    <div className="input-header">
-                      <label>Height</label>
-                      <span className="input-val-badge">
-                        {units === 'metric' ? (
-                          `${height || '0'} cm`
-                        ) : (
-                          `${heightFt || '0'} ft ${heightIn || '0'} in`
-                        )}
-                      </span>
-                    </div>
-
-                    {units === 'metric' ? (
-                      <div className="input-slider-row">
-                        <input 
-                          type="range"
-                          min="100"
-                          max="230"
-                          step="1"
-                          value={height || '170'}
-                          onChange={(e) => setHeight(e.target.value)}
-                          className="bmi-range-slider"
-                        />
-                        <input 
-                          type="number" 
-                          value={height} 
-                          onChange={(e) => setHeight(e.target.value)} 
-                          required 
-                          min="30"
-                          placeholder="Height"
-                          className="bmi-numeric-input"
-                        />
-                      </div>
-                    ) : (
-                      <div className="imperial-height-row">
-                        <div className="imperial-subgroup">
-                          <label className="sub-label">Feet</label>
-                          <div className="input-slider-row">
-                            <input 
-                              type="range"
-                              min="3"
-                              max="8"
-                              step="1"
-                              value={heightFt || '5'}
-                              onChange={(e) => setHeightFt(e.target.value)}
-                              className="bmi-range-slider"
-                            />
-                            <input 
-                              type="number"
-                              value={heightFt}
-                              onChange={(e) => setHeightFt(e.target.value)}
-                              min="1"
-                              max="9"
-                              required
-                              className="bmi-numeric-input"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="imperial-subgroup">
-                          <label className="sub-label">Inches</label>
-                          <div className="input-slider-row">
-                            <input 
-                              type="range"
-                              min="0"
-                              max="11"
-                              step="1"
-                              value={heightIn || '7'}
-                              onChange={(e) => setHeightIn(e.target.value)}
-                              className="bmi-range-slider"
-                            />
-                            <input 
-                              type="number"
-                              value={heightIn}
-                              onChange={(e) => setHeightIn(e.target.value)}
-                              min="0"
-                              max="11"
-                              required
-                              className="bmi-numeric-input"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <button type="submit" disabled={loading} className="calculate-btn">
-                    {loading ? (
-                      <>
-                        <span className="spinner"></span>
-                        Analyzing Health Profile...
-                      </>
-                    ) : (
-                      <>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="btn-icon">
-                         
-                        </svg>
-                        Get AI Personalized Advice
-                      </>
-                    )}           
-                  </button>
-                </form>
-              </div>
-
-              {/* Dynamic Arc Gauge displaying Real-time or Calculated BMI */}
-              <div className="dashboard-card gauge-card-wrapper">
-                <h3>{result ? "Calculated BMI" : "Real-time Estimation"}</h3>
-                
-                <div className="gauge-container">
-                  <svg viewBox="0 0 200 120" className="bmi-gauge">
-                    <defs>
-                      <linearGradient id="gauge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#60a5fa" />    {/* Underweight */}
-                        <stop offset="28%" stopColor="#60a5fa" />
-                        <stop offset="35%" stopColor="#34d399" />   {/* Normal */}
-                        <stop offset="50%" stopColor="#34d399" />
-                        <stop offset="60%" stopColor="#fbbf24" />   {/* Overweight */}
-                        <stop offset="75%" stopColor="#fbbf24" />
-                        <stop offset="85%" stopColor="#f87171" />   {/* Obese */}
-                        <stop offset="100%" stopColor="#f87171" />
-                      </linearGradient>
-                    </defs>
-                    
-                    {/* Background track arc */}
-                    <path 
-                      d="M 25 100 A 75 75 0 0 1 175 100" 
-                      fill="none" 
-                      stroke="var(--card-border)" 
-                      strokeWidth="14" 
-                      strokeLinecap="round" 
-                    />
-                    
-                    {/* Gradient overlay arc */}
-                    <path 
-                      d="M 25 100 A 75 75 0 0 1 175 100" 
-                      fill="none" 
-                      stroke="url(#gauge-grad)" 
-                      strokeWidth="14" 
-                      strokeLinecap="round" 
-                    />
-
-                    {/* Gauge needle */}
-                    {displayBmi && (
-                      <g 
-                        transform={`translate(100, 100) rotate(${getGaugeRotation(displayBmi)})`} 
-                        className="gauge-needle-group"
-                      >
-                        <path d="M 0 5 L 0 -82" stroke="var(--text-main)" strokeWidth="3" strokeLinecap="round" />
-                        <polygon points="-5,0 5,0 0,-15" fill="var(--text-main)" />
-                        <circle cx="0" cy="0" r="9" fill="var(--primary)" stroke="var(--text-inverse)" strokeWidth="2.5" />
-                        <circle cx="0" cy="0" r="3.5" fill="var(--text-inverse)" />
-                      </g>
-                    )}
-                  </svg>
-                    
-                  <div className="gauge-text-overlay">
-                    <span className="gauge-bmi-num">{displayBmi || '--.-'}</span>
-                    {displayStatus && (
-                      <span className={`gauge-bmi-status ${displayStatus.toLowerCase()}`}>
-                        {displayStatus}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Legend bar tags */}
-                <div className="gauge-legend">
-                  <span className="legend-item uw">
-                    <span className="legend-dot"></span> &lt; 18.5 Under
-                  </span>
-                  <span className="legend-item n">
-                    <span className="legend-dot"></span> 18.5 - 25 Healthy
-                  </span>
-                  <span className="legend-item ow">
-                    <span className="legend-dot"></span> 25 - 30 Over
-                  </span>
-                  <span className="legend-item ob">
-                    <span className="legend-dot"></span> 30+ Obese
-                  </span>
-                </div>
-              </div>
-
-              {/* Latest AI Advice Report Display */}
-              {result && (
-                <div className="dashboard-card ai-report-card">
-                  <div className="ai-report-header">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ai-spark-icon">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                    <h4>AI Personalized Health Tips</h4>
-                  </div>
-                  <div className="ai-advice-body">
-                    <p>{result.aiAdvice}</p>
-                  </div>
-                  <div className="ai-advice-disclaimer">
-                    ⚠️ AI advice is intended for informational and motivational support. Please consult a health practitioner for official clinical guidelines.
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* COLUMN 2: ANALYTICS & WEIGHT TREND HISTORY */}
-            <div className={`grid-column-right ${activeTab !== 'history' ? 'mobile-hidden' : ''}`}>
-              
-              {/* Quick Stats Overview */}
-              {history.length > 0 && (
-                <div className="stats-grid">
-                  <div className="stat-mini-card">
-                    <span className="stat-label">Average BMI</span>
-                    <span className="stat-value">{avgBmi}</span>
-                    <span className="stat-sub">Across all entries</span>
-                  </div>
-                  <div className="stat-mini-card">
-                    <span className="stat-label">Latest Log</span>
-                    <span className="stat-value">
-                      {newestRecord ? newestRecord.weight : '--'} 
-                      <span className="stat-unit">{units === 'metric' ? ' kg' : ' lbs'}</span>
-                    </span>
-                    <span className="stat-sub">
-                      {newestRecord ? new Date(newestRecord.createdAt).toLocaleDateString() : 'No entries'}
-                    </span>
-                  </div>
-                  <div className="stat-mini-card">
-                    <span className="stat-label">Weight Delta</span>
-                    <span className={`stat-value ${progressClass}`}>
-                      {progressText ? progressText.split(' ')[0] : 'Stable'} 
-                      {progressText && <span className="stat-unit"> {units === 'metric' ? 'kg' : 'lbs'}</span>}
-                    </span>
-                    <span className="stat-sub">{progressText ? (progressText.includes('reduction') ? 'Reduced weight' : 'Added weight') : 'No change'}</span>
-                  </div>
-                </div>
-              )}
+        </div>
+      )}
 
               {/* Graphical line chart representation */}
               {renderHistoryChart()}
