@@ -439,11 +439,6 @@ function App() {
                   </div>
                 )}
               </div>
-            </div>
-
-          </div>
-        </>
-      )}
       
       {/* Sleek Modern Footer */}
       <footer className="app-footer">
