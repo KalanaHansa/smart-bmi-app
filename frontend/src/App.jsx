@@ -334,7 +334,7 @@ function App() {
                 )}
                 <div className="user-meta">
                   <span className="user-name">{user.displayName}</span>
-                  <span className="user-status">Member</span>
+                  <span className="user-status">Welcome!</span>
                 </div>
               </div>
               <button onClick={handleLogout} className="logout-btn" title="Log Out">
@@ -762,6 +762,18 @@ function App() {
           </div>
         </>
       )}
+      
+      {/* Sleek Modern Footer */}
+      <footer className="app-footer">
+        <p>© {new Date().getFullYear()} SmartAI BMI Tracker. Intelligent Health & Nutrition companion.</p>
+        <div className="footer-links">
+          <span>AI Assisted Health Plan</span>
+          <span className="footer-dot">•</span>
+          <span>Privacy Secured</span>
+          <span className="footer-dot">•</span>
+          <span>Google Cloud Verified</span>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -996,3 +996,48 @@ button.calculate-btn:disabled {
     max-height: 400px;
   }
 }
+
+/* Footer Styling */
+.app-footer {
+  margin-top: auto;
+  padding: var(--space-xl) 0 var(--space-md);
+  border-top: 1px solid var(--card-border);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  width: 100%;
+}
+
+.app-footer p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+  opacity: 0.8;
+}
+
+.footer-dot {
+  font-size: 0.65rem;
+  color: var(--primary);
+}
+
+@media (max-width: 480px) {
+  .app-footer {
+    padding-top: var(--space-lg);
+    font-size: 0.75rem;
+  }
+  .footer-links {
+    gap: 4px;
+  }
+}
