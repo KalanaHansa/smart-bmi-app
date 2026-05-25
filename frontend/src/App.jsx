@@ -770,6 +770,31 @@ function App() {
             </div>
 
           </div>
+          {/* Sleek Modern Footer */}
+          <footer className="app-footer">
+            <div className="footer-content">
+              <p className="copyright">
+                © {new Date().getFullYear()} Smart BMI Tracker. Intelligent Health.
+              </p>
+              
+              <div className="footer-badges">
+                <span className="badge">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.5C12.2155 7.643 16.357 11.7845 21.5 12C16.357 12.2155 12.2155 16.357 12 21.5C11.7845 16.357 7.643 12.2155 2.5 12C7.643 11.7845 11.7845 7.643 12 2.5Z" />
+                  </svg>
+                  AI Assisted
+                </span>
+                <span className="badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Privacy Secured
+                </span>
+                <span className="badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                  Cloud Verified
+                </span>
+              </div>
+            </div>
+          </footer>
         </>
       )}
     </div>

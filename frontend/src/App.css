@@ -1142,3 +1142,76 @@ button.calculate-btn:disabled {
     max-height: 400px;
   }
 }
+
+/* --- Footer Container --- */
+.app-footer {
+  width: 100%;
+  margin-top: auto; /* Pushes footer to the bottom of the page */
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--card-border, #e2e8f0);
+  background-color: transparent;
+}
+
+.footer-content {
+  max-width: var(--body-max-width, 1200px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* --- Typography --- */
+.copyright {
+  font-size: 0.875rem;
+  color: var(--text-muted, #64748b);
+  text-align: center;
+  margin: 0;
+}
+
+/* --- Pill Badges Layout --- */
+.footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #475569);
+  background: var(--badge-bg, #f1f5f9);
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px; /* Creates the perfect pill shape */
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.badge:hover {
+  color: var(--primary, #0f172a);
+  background: var(--badge-bg-hover, #e2e8f0);
+}
+
+.badge svg {
+  width: 14px;
+  height: 14px;
+  color: currentColor;
+}
+
+/* --- Desktop Layout --- */
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .copyright {
+    text-align: left;
+  }
+}
